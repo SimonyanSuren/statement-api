@@ -40,10 +40,16 @@ ENV NODE_ENV production
 
 FROM node:20.10.0-bookworm-slim AS production
 
+RUN apt-get update && apt-get install -y openssl
+
 USER node
 
 WORKDIR /usr/src/app/statement-api
 
-COPY --chown=node:node --from=build /usr/src/app/statement-api/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/statement-api/package.json ./
+COPY --chown=node:node --from=build /usr/src/app/statement-api/.env ./.env
+COPY --chown=node:node --from=build /usr/src/app/statement-api/prisma ./prisma
 COPY --chown=node:node --from=build /usr/src/app/statement-api/dist ./dist
-COPY package.json ./
+COPY --chown=node:node --from=build /usr/src/app/statement-api/node_modules ./node_modules
+
+RUN npx prisma generate

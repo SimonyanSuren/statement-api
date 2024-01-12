@@ -11,16 +11,15 @@ services:
       - '3030:3030'
     env_file:
       - .env
-    volumes:
-      - ./src:/usr/src/app/statement-api/src
     networks:
       - backend-network
     build:
-      context: . ### For development run
-      target: development
-    entrypoint: sh -c 'sleep 1 && npm run start:dev'
-    #entrypoint: sh -c 'sleep 20 && npm run start:prod'
-
+      context: .
+      ### For development run
+      #target: 
+      #entrypoint: sh -c 'sleep 1 && npm run start:dev'
+    entrypoint: sh -c 'sleep 10 && npm run start:prod'
+    
     # Setup postgres database container
   postgres-db:
     container_name: postgres-db
@@ -51,12 +50,12 @@ services:
   redis:
     container_name: redis
     image: redis:7.0.11
-    command: redis-server --port 6380 --requirepass ${REDIS_PASS}
+    command: redis-server --port 6379 --requirepass ${REDIS_PASS}
     restart: always
     volumes:
       - redis_data:/data
     ports:
-      - '6380:6380'
+      - '6379:6379'
     networks:
       - backend-network
 
