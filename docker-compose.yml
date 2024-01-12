@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+
+  # Setup api container
+  statement-api:
+    container_name: statement-api
+    image: 'statement-api:1.0.0'
+    restart: always
+    ports:
+      - '3030:3030'
+    env_file:
+      - .env
+    volumes:
+      - ./src:/usr/src/app/statement-api/src
+    networks:
+      - backend-network
+    build:
+      context: . ### For development run
+      target: development
+    entrypoint: sh -c 'sleep 1 && npm run start:dev'
+    #entrypoint: sh -c 'sleep 20 && npm run start:prod'
+
+    # Setup postgres database container
+  postgres-db:
+    container_name: postgres-db
+    image: postgres:15.5
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  # Setup pgAdmin container
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:8.1
+    restart: always
+    ports:
+      - 5050:80
+    env_file:
+      - .env
+    networks:
+      - backend-network
+
+  # Setup redis container
+  redis:
+    container_name: redis
+    image: redis:7.0.11
+    command: redis-server --port 6380 --requirepass ${REDIS_PASS}
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - '6380:6380'
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -60,3 +60,7 @@ To stop the application and remove the containers, run:
 ```bash
 $ docker compose down
 ```
+
+### Conclusion
+
+The chosen technologies and architecture aim to create a scalable, maintainable, and efficient solution for validating customer statement records. The combination of Node.js, TypeScript, NestJS, Prisma, BullMQ, and Docker Compose provides a robust foundation for this task. The use of Commitlint ensures clear and standardized commit messages for improved collaboration and versioning.

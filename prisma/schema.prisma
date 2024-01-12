@@ -1,0 +1,32 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model CustomerStatement {
+  id            Int      @id @default(autoincrement())
+  txnReference  String   @unique
+  accountNumber String
+  mutation      String
+  startBalance  Decimal  @db.Decimal(10, 2)
+  endBalance    Decimal  @db.Decimal(10, 2)
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("customer_statements")
+}
+
+model FailedStatement {
+  id           Int      @id @default(autoincrement())
+  txnReference String
+  description  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("failed_statements")
+}
